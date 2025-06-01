@@ -35,7 +35,6 @@ datastore/
 *.sqlite
 
 # Logs and Screenshots
-logs_screenshots/
 *.log
 
 # API Test files
