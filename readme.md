@@ -1,199 +1,199 @@
+# 🚀 AI Creative Pipeline - Transform Ideas into Images and 3D Models
 
-# 🚀 The AI Developer Challenge
+## 🎯 What This Does
 
-### Make Something Insanely Great
-Welcome. This isn’t just a coding task. This is a mission. A calling for the bold and curious—those who dare to think
-differently. If you're ready to build something magical, something powerful, something *insanely great*—read on.
+This AI Creative Pipeline takes your text prompts and transforms them into:
+1. **Enhanced Prompts** - Local LLM (DeepSeek) analyzes and expands your ideas
+2. **Beautiful Images** - Generates high-quality images from enhanced prompts  
+3. **Interactive 3D Models** - Converts images into 3D models you can view and download
+4. **Smart Memory** - Remembers your creations and can reference them in future generations
 
----
+**Example:** Type *"A glowing dragon on a cliff at sunset"* → Get an image + 3D model + stored in memory for future reference!
 
-## 🌟 The Vision
+## 🏆 Bonus Features Implemented
 
-Imagine this:  
-A user types a simple idea —
-> “Make me a glowing dragon standing on a cliff at sunset.”
+✅ **Visual GUI with Streamlit** - Complete web interface with real-time progress, 3D viewing, and file management  
+✅ **ChromaDB for Memory Similarity** - Semantic search using vector embeddings to find similar past creations  
+✅ **Local Browser for 3D Assets** - Integrated file browser to explore, view, and download all generated content  
 
-And your app...
+## 🧠 Memory Functionality (Core Feature)
 
-- Understands the request using a local LLM.
-- Generates stunning visuals from text.
-- Transforms that image into an interactive 3D model.
-- Remembers it. Forever.
+The system implements both **Short-Term** and **Long-Term** memory as required:
 
-You're not building an app. You're building **a creative partner**.
+### 📚 **Long-Term Memory (Persistent)**
+- **Storage**: ChromaDB vector database with persistent storage in `app/datastore/memory/`
+- **What's Stored**: Every creation includes prompt, expanded prompt, LLM analysis, image path, 3D model path, and timestamp
+- **Embeddings**: Uses `sentence-transformers/all-MiniLM-L6-v2` for semantic similarity
+- **Persistence**: Survives application restarts and system reboots
 
----
 
-## 🎯 The Mission
+### **Session Context (Short-Term)**
+- Active during single web session
+- Tracks current generation progress
+- Maintains UI state and file selections
 
-Create an intelligent, end-to-end pipeline powered by Openfabric and a locally hosted LLM:
+### 🔍 **Memory Reference Detection**
+The LLM actively detects when users reference past creations:
+- **Explicit References**: *"like the one I made last time"*, *"similar to my dragon"*
+- **Temporal References**: *"last Thursday"*, *"yesterday"*, *"before"*
+- **Variation Requests**: *"but with wings"*, *"this time with crystals"*
+- **Comparative Language**: *"similar to"*, *"like my previous"*
 
-### Step 1: Understand the User
+### 🎯 **Memory-Aware Processing**
+When memory references are detected:
+1. **Similarity Search**: Finds relevant past creations using semantic matching
+2. **Context Integration**: LLM uses past creation context to enhance new prompts
+3. **Smart Expansion**: Prompts are expanded with knowledge of user's creative history
+4. **Confidence Scoring**: Each memory match includes similarity percentage
 
-Use a local LLM like **DeepSeek** or **Llama** to:
+### 💡 **Example Memory Usage**
+```
+User: "Generate a robot like the one I made before, but with wings"
 
-- Interpret prompts
-- Expand them creatively
-- Drive meaningful, artistic input into the generation process
-
-### Step 2: Bring Ideas to Life
-
-Chain two Openfabric apps together:
-
-- **Text to Image**  
-  App ID: `f0997a01-d6d3-a5fe-53d8-561300318557`  
-  [View on Openfabric](https://openfabric.network/app/view/f0997a01-d6d3-a5fe-53d8-561300318557)
-
-- **Image to 3D**  
-  App ID: `69543f29-4d41-4afc-7f29-3d51591f11eb`  
-  [View on Openfabric](https://openfabric.network/app/view/69543f29-4d41-4afc-7f29-3d51591f11eb)
-
-Use their **manifest** and **schema** dynamically to structure requests.
-
-### Step 3: Remember Everything
-
-Build memory like it matters.
-
-- 🧠 **Short-Term**: Session context during a single interaction
-- 💾 **Long-Term**: Persistence across sessions using SQLite, Redis, or flat files  
-  Let the AI recall things like:
-
-> “Generate a new robot like the one I created last Thursday — but this time, with wings.”
-
----
-
-## 🛠 The Pipeline
-
-User Prompt
-↓
-Local LLM (DeepSeek or LLaMA)
-↓
-Text-to-Image App (Openfabric)
-↓
-Image Output
-↓
-Image-to-3D App (Openfabric)
-↓
-3D Model Output
-
-Simple. Elegant. Powerful.
-
----
-
-## 📦 Deliverables
-
-What we expect:
-
-- ✅ Fully working Python project
-- ✅ `README.md` with clear instructions
-- ✅ Prompt → Image → 3D working example
-- ✅ Logs or screenshots
-- ✅ Memory functionality (clearly explained)
-
----
-
-## 🧠 What We’re Really Testing
-
-- Your grasp of the **Openfabric SDK** (`Stub`, `Remote`, `schema`, `manifest`)
-- Your **creativity** in prompt-to-image generation
-- Your **engineering intuition** with LLMs
-- Your ability to manage **context and memory**
-- Your **attention to quality** — code, comments, and clarity
-
----
-
-## 🚀 Bonus Points
-
-- 🎨 Visual GUI with Streamlit or Gradio
-- 🔍 FAISS/ChromaDB for memory similarity
-- 🗂 Local browser to explore generated 3D assets
-- 🎤 Voice-to-text interaction
-
----
-
-## ✨ Example Experience
-
-Prompt:
-> “Design a cyberpunk city skyline at night.”
-
-→ LLM expands into vivid, textured visual descriptions  
-→ Text-to-Image App renders a cityscape  
-→ Image-to-3D app converts it into depth-aware 3D  
-→ The system remembers the request for remixing later
-
-That’s not automation. That’s imagination at scale.
-
----
-
-## 💡 Where to start
-You’ll find the project structure set, the entrypoint is in `main.py` file.
-```python
-############################################################
-# Execution callback function
-############################################################
-def execute(model: AppModel) -> None:
-    """
-    Main execution entry point for handling a model pass.
-
-    Args:
-        model (AppModel): The model object containing request and response structures.
-    """
-
-    # Retrieve input
-    request: InputClass = model.request
-
-    # Retrieve user config
-    user_config: ConfigClass = configurations.get('super-user', None)
-    logging.info(f"{configurations}")
-
-    # Initialize the Stub with app IDs
-    app_ids = user_config.app_ids if user_config else []
-    stub = Stub(app_ids)
-
-    # ------------------------------
-    # TODO : add your magic here
-    # ------------------------------
-                                
-                                
-                                
-    # Prepare response
-    response: OutputClass = model.response
-    response.message = f"Echo: {request.prompt}"
+System Process:
+1. 🔍 Detects memory reference: "like the one I made before"
+2. 🔎 Searches past creations for robots
+3. 📚 Finds: "A steampunk robot playing violin" (78% similarity)
+4. ✨ Enhances prompt: "A steampunk robot with intricate brass wings, playing violin, vintage gears visible..."
+5. 🎨 Generates image and 3D model using enhanced context
 ```
 
-Given schema, stub implementation and all the details you should be able to figure out how eventing works but as an
-extra hint (if needed) here is an example of calling and app get the value and save it as an image:
-```python
-    # Call the Text to Image app
-    object = stub.call('c25dcd829d134ea98f5ae4dd311d13bc.node3.openfabric.network', {'prompt': 'Hello World!'}, 'super-user')
-    image = object.get('result')
-    # save to file
-    with open('output.png', 'wb') as f:
-        f.write(image)
+### 🧠 **Memory-Aware AI Processing**
+
+The system intelligently detects when users reference past creations:
+
+1. 🔍 **Detects**: "Make a cat like my last one but orange"
+2. 📚 **Searches**: Previous cat creations (finds tabby cat, siamese cat)  
+3. 📚 **Finds**: "A cute cartoon cat sitting down" (85% similarity)
+4. ✨ **Enhances prompt**: "A cute cartoon cat sitting down with orange fur, round eyes, playful pose..."
+
+### 🔧 **Technical Implementation**
+
+- **ChromaDB**: Vector similarity search for memory matching
+- **Sentence Transformers**: Semantic embeddings for prompt understanding  
+- **Local LLM Integration**: DeepSeek for intelligent prompt expansion
+- **Streamlit Interface**: Beautiful, responsive web UI
+
+## 🚀 Quick Setup & Usage
+
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
 ```
 
-## How to start
-The application can be executed in two different ways:
-* locally by running the `start.sh` 
-* on in a docker container using `Dockerfile`
+### 2. Install & Setup Ollama + DeepSeek
+```bash
+# Install Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
 
-If all is fine you should be able to access the application on `http://localhost:8888/swagger-ui/#/App/post_execution` and see the following screen:
+# Pull DeepSeek model (this will take a few minutes)
+ollama pull deepseek-r1:1.5b
 
-![Swagger UI](./swagger-ui.png)
+# Start Ollama service (keep this running)
+ollama serve
+```
 
-## Ground Rules
-Step up with any arsenal (read: libraries or packages) you believe in, but remember:
-* 👎 External services like chatGPT are off-limits. Stand on your own.
-* 👎 Plagiarism is for the weak. Forge your own path.
-* 👎 A broken app equals failure. Non-negotiable.
+### 3. Start the Backend API
+```bash
+cd app
+./start.sh
+```
+**Keep this terminal running** - you'll see logs here showing the pipeline in action.
 
-## This Is It
-We're not just evaluating a project; we're judging your potential to revolutionize our 
-landscape. A half-baked app won’t cut it.
+### 4. Launch the Web Interface
+```bash
+# In a new terminal
+streamlit run streamlit_app.py
+```
 
-We're zeroing in on:
-* 👍 Exceptional documentation.
-* 👍 Code that speaks volumes.
-* 👍 Inventiveness that dazzles.
-* 👍 A problem-solving beast.
-* 👍 Unwavering adherence to the brief
+Open your browser to: **http://localhost:8501**
+
+## 🎨 How to Generate Content
+
+1. **Enter a Prompt** - Type your creative idea in the text area
+2. **Click "🚀 Generate"** - Watch the progress as your idea comes to life
+3. **View Results** - See both the generated image and interactive 3D model
+4. **Browse Past Creations** - Use the sidebar to explore your memory bank
+
+### Example Prompts to Try:
+- *"A cute cartoon cat sitting down"*
+- *"A simple wooden chair"*
+- *"A red apple on a table"*
+- *"Generate a cat like the one I made before, but orange"* (memory-aware!)
+
+
+
+
+### Test Memory Functionality
+```bash
+cd app
+source venv/bin/activate
+PYTHONPATH=. python ../demo_for_submission.py
+```
+This shows memory detection, similarity matching, and context awareness in action.
+
+## 📊 What You'll See in the Logs
+
+When you generate content, watch the backend terminal for detailed logs showing:
+
+```
+🚀 Starting AI pipeline for prompt: 'A glowing dragon...'
+🧠 Step 1: Understanding user intent with local LLM...
+🔍 Memory reference detection: {'has_memory_reference': True, 'confidence': 'high'}
+📚 Found 3 similar past creations for context
+✨ Expanded prompt: A majestic glowing dragon with iridescent scales...
+🎨 Step 2: Generating image from expanded prompt...
+💾 Image saved as: generated_content/2024-01-15/image_20240115_143022.png
+🎭 Step 2.2: Converting image to 3D model...
+🎭 3D model saved as: generated_content/2024-01-15/model_20240115_143022.glb
+🧠 Step 3: Storing creation in memory...
+✅ Memory stored with ID: 12345
+✅ All pipeline steps completed successfully!
+```
+
+## 📁 Generated Files
+
+All your creations are saved in `app/generated_content/` organized by date:
+- **Images**: `.png` files 
+- **3D Models**: `.glb` files (viewable in the web interface)
+
+## 🔧 System Architecture
+
+```
+User Prompt → DeepSeek LLM → Enhanced Prompt → Openfabric Text-to-Image → Image
+     ↓                                                                      ↓
+Memory Detection                                               Openfabric Image-to-3D
+     ↓                                                                      ↓
+Memory Storage ← ← ← ← ← Final Creation ← ← ← ← ← ← ← ← ← 3D Model
+```
+
+## 🚨 Troubleshooting
+
+**"Ollama not responding"**
+```bash
+ollama serve  # Make sure this is running
+ollama list   # Check DeepSeek model is installed
+```
+
+**"ModuleNotFoundError"**  
+```bash
+cd app
+source venv/bin/activate  # Use the pre-configured environment
+```
+
+**"No generations appearing"**
+- Check both terminals are running (backend + streamlit)
+- Verify Ollama is running with `ollama list`
+- Check logs in the backend terminal for specific errors
+
+## 🎯 Key Features Demonstrated
+
+- ✅ **End-to-End Pipeline**: Text → LLM Enhancement → Image → 3D Model
+- ✅ **Memory-Aware Processing**: Detects and uses past creation context  
+- ✅ **Real-Time Web Interface**: Beautiful Streamlit dashboard
+- ✅ **Persistent Storage**: All creations saved and browsable
+- ✅ **Interactive 3D Viewing**: View and download 3D models in browser
+
+---
+
+**Ready to create?** Follow the setup steps above and start generating amazing content! The system learns from your creations and gets smarter with every prompt. 
